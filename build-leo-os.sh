@@ -13,7 +13,7 @@ WORK="${PWD}/_build"
 mkdir -p "$WORK"
 cd "$WORK"
 lb config --mode debian --distribution "$SUITE" --architectures amd64 \
-  --binary-images iso-hybrid --bootloaders "isolinux grub-efi" \
+  --binary-images iso-hybrid
   --debian-installer none --archive-areas "main contrib non-free-firmware" \
   --bootappend-live "boot=live components username=${LIVE_USER} hostname=leo-os" \
   --iso-application "$OS_NAME" --iso-publisher "Leo OS Project" \
