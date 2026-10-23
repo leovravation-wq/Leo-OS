@@ -1,0 +1,31 @@
+name: Build Leo OS ISO
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  iso:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install live-build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso isolinux syslinux-common grub-pc-bin grub-efi-amd64-bin mtools dosfstools
+      - name: Build Leo OS
+        run: sudo bash ./build-leo-os.sh
+      - name: Inspect ISO
+        run: |
+          test -s leo-os.iso
+          xorriso -indev leo-os.iso -report_el_torito plain | tee boot-report.txt
+          sha256sum leo-os.iso | tee SHA256SUMS
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: Leo-OS-1.0-ISO
+          path: |
+            leo-os.iso
+            SHA256SUMS
+            boot-report.txt
+          retention-days: 7
